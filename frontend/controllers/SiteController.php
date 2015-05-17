@@ -7,6 +7,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\Images;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -120,6 +121,18 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
+            
+            if($_POST['avatar']){
+                $uploaddir = '/advanced//frontend/web/avatars';
+                $uploadfile = $uploaddir . basename($_FILES['avatar']['name']);
+                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadfile)) {
+                    echo "File is valid, and was successfully uploaded.\n";
+                } else {
+                    echo "Possible file upload attack!\n";
+                }
+                $model->avatar = $uploadfile;
+            }
+            
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
