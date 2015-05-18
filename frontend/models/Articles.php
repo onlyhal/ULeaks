@@ -44,7 +44,7 @@ class Articles extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'хуй',
+            'id' => 'ID',
             'title' => 'Title',
             'description' => 'Description',
             'date' => 'Date',
