@@ -120,17 +120,21 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post())) {  // isset($_POST) ||  $_POST
             
             if($_POST['avatar']){
-                $uploaddir = '/advanced//frontend/web/avatars';
-                $uploadfile = $uploaddir . basename($_FILES['avatar']['name']);
-                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadfile)) {
-                    echo "File is valid, and was successfully uploaded.\n";
-                } else {
-                    echo "Possible file upload attack!\n";
+               
+           
+                $dir = 'data/'; //путь к media
+                
+                $file = $dir.basename($_FILES['avatar']['name']);
+                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) {
+                        $model->avatar = $uploadfile;
+                } 
+                else{
+                        echo "Failed";
                 }
-                $model->avatar = $uploadfile;
+                
             }
             
             if ($user = $model->signup()) {
