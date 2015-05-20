@@ -79,7 +79,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+         echo'<META HTTP-EQUIV=Refresh Content="0;URL=index.php?r=user%2Fview&id='.$_SESSION['__id'].'">';//return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -139,7 +139,7 @@ class SiteController extends Controller
             
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
+                    echo'<META HTTP-EQUIV=Refresh Content="0;URL=index.php?r=user%2Fview&id='.$user->id.'">';//return $user->id;//$this->goHome();
                 }
             }
         }
