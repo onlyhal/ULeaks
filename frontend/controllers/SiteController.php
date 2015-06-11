@@ -8,6 +8,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Images;
+use common\models\User;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -79,7 +80,14 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-         echo'<META HTTP-EQUIV=Refresh Content="0;URL=index.php?r=user%2Fview&id='.$_SESSION['__id'].'">';//return $this->goBack();
+
+            $user_id = User::find()
+                ->where(['username' => $model->username])
+                ->one();
+
+            Yii::$app->session['id_user'] = $user_id['id'];
+
+            return $this->redirect('/frontend/web/index.php?r=user%2Findex');
         } else {
             return $this->render('login', [
                 'model' => $model,
@@ -90,7 +98,7 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
+        Yii::$app->session['id_user'] = null;
         return $this->goHome();
     }
 
@@ -139,7 +147,8 @@ class SiteController extends Controller
             
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
-                    echo'<META HTTP-EQUIV=Refresh Content="0;URL=index.php?r=user%2Fview&id='.$user->id.'">';//return $user->id;//$this->goHome();
+                    Yii::$app->session['id_user'] = $user->id;
+                    return $this->redirect('/frontend/web/index.php?r=user%2Findex');
                 }
             }
         }

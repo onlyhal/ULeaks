@@ -32,13 +32,16 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),
-        ]);
+        if(! Yii::$app->session['id_user']){
+            return $this->goHome();
+        }else{
+            $id = Yii::$app->session['id_user'];
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
+
     }
 
     /**
