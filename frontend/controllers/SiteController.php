@@ -131,13 +131,13 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post())) {  // isset($_POST) ||  $_POST
             
             if($_POST['avatar']){
-               
-           
-                $dir = 'data/'; //путь к media
+                $path = 'media/avatars/';
+                @mkdir($path, 0777);
+
                 
-                $file = $dir.basename($_FILES['avatar']['name']);
-                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $file)) {
-                        $model->avatar = $uploadfile;
+
+                if (copy($_FILES['avatar']['tmp_name'][0],$path."/".basename($_FILES['avatar']['name'][0]))) {
+                        $model->avatar = $path."/".basename($_FILES['avatar']['name']);
                 } 
                 else{
                         echo "Failed";

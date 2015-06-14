@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use app\models\Images;
+use app\models\Universities;
+use app\models\User;
 use Yii;
 use app\models\Articles;
 use yii\data\ActiveDataProvider;
@@ -48,8 +51,15 @@ class ArticlesController extends Controller
      */
     public function actionView($id)
     {
+        $model = Articles::findOne($id);
+        $model_image = Images::find()->where(['id_article' => $model->id])->all();
+        $model_university = Universities::findOne($model->id_university);
+        $model_user = User::findOne($model->id_user);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'model_image' => $model_image,
+            'university' => $model_university->name,
+            'user' => $model_user->username,
         ]);
     }
 
@@ -60,14 +70,37 @@ class ArticlesController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Articles();
+        if(Yii::$app->session['id_user']){
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model = new Articles();
+            $model_university = Universities::find()->all();
+            $id_user = Yii::$app->session['id_user'];
+        if ($model->load(Yii::$app->request->post())) {
+            $model->id_user = $id_user;
+            $model->date = date('Y-m-d');
+            $model->id_university = $_POST['id_university'];
+
+            $model->save();
+           if($_FILES['pictures']){
+                $path = 'media/articles/'.(string)$model->id;
+                @mkdir($path, 0777);
+                for($i = 0, $files_count = count($_FILES['pictures']['name']); $i < $files_count; $i++){
+                    copy($_FILES['pictures']['tmp_name'][$i],$path."/".basename($_FILES['pictures']['name'][$i]));
+                    $model_images = new Images();
+                    $model_images->id_article = $model->id;
+                    $model_images->src = $path."/".basename($_FILES['pictures']['name'][$i]);
+                    $model_images->save();
+                }
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'model_university' => $model_university,
             ]);
+        }
+        }else{
+            return $this->goHome();
         }
     }
 

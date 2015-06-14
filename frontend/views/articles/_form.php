@@ -15,13 +15,14 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+    <div class="form-group">
 
-    <?= $form->field($model, 'date')->textInput() ?>
-
-    <?= $form->field($model, 'id_user')->textInput() ?>
-
-    <?= $form->field($model, 'id_university')->textInput() ?>
-
+        <select name="id_university" id="id_university" class="form-control">
+            <? foreach ($model_university as $university): ?>
+                <option value="<?php echo $university->id; ?>" ><?php echo $university->name; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

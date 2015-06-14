@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <label class="control-label" for="avatar">
                     Avatar
                 </label>
-                <input type="file" name="avatar">
+                <input type="file" name="avatar[]">
             </div>
                 <?= $form->field($model, 'password')->passwordInput() ?>
                 <div class="form-group">

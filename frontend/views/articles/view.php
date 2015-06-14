@@ -32,9 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description:ntext',
             'date',
-            'id_user',
-            'id_university',
         ],
     ]) ?>
-
+    <?php echo $university; ?>
+    <br>
+    <?php echo $user; ?>
+    <br>
+    <?php foreach($model_image as $image ): ?>
+    <div class="visible-lg-inline-block"><img src="<?php echo $image->src; ?>" height="100" alt=""> </div>
+    <?php endforeach;?>
 </div>
